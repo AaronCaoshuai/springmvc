@@ -5,7 +5,7 @@
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
     <!-- 学习前置条件 -->
-    <!-- 问题1：web.xml中servelet、filter、listener、context-param加载顺序 -->
+    <!-- 问题1：web.xml中servlet、filter、listener、context-param加载顺序 -->
     <!-- 问题2：load-on-startup标签的作用，影响了servlet对象创建的时机 -->
     <!-- 问题3：url-pattern标签的配置方式有四种：/dispatcherServlet、 /servlet/* 、*
     、/ ,以上四种配置，优先级是如何的-->
@@ -36,7 +36,9 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <!-- 通俗解释：/*，会拦截整个项目中的资源访问，包含JSP和静态资源的访问，对于静态资源
         的访问springMVC提供了默认的Handler处理器 -->
         <!-- 但是对于JSP来讲，springmvc没有提供默认的处理器，我们也没有手动编写对于的处理
-        器，此时按照springmvc的处理流程分析得知，它短路了 -->
+        器，此时按照springmvc的处理流程分析得知，它短路了
+        也可以配置.do结尾,或者其他,来指定非页面请求的处理
+        -->
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     <!-- <servlet> -->

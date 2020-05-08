@@ -18,8 +18,8 @@
     <mvc:annotation-driven />
     <!-- 配置三大组件之视图解析器 -->
     <!-- InternalResourceViewResolver:默认支持JSP视图解析-->
-    <bean
-            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 前缀,后缀,只需要返回动态的部分,就可以寻址到对应的视图 -->
         <property name="prefix" value="/WEB-INF/jsp/" />
         <property name="suffix" value=".jsp" />
     </bean>

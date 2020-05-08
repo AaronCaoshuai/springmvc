@@ -22,7 +22,10 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-        <!-- servlet -->
+        <!-- servlet
+        在项目中使用到HttpRequestServlet,HttpResponseServlet
+        指定运行时间在编译期
+        -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -33,7 +36,7 @@
 
     <build>
         <plugins>
-            <!--配置jdk环境-->
+            <!--配置maven编译的jdk环境-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -44,7 +47,9 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--配置Tomcat插件-->
+            <!--配置Tomcat插件
+            使用maven的tomcat插件来启动项目,是一种轻量级的启动方式,暂用内存较少
+            -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
