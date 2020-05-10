@@ -1,48 +1,13 @@
-目录 
-SpringMVC相关
-背景介绍
-基础概念介绍
-应用系统三层架构
-MVC设计模式
-SpringMVC介绍
-SpringMVC是什么
-SpringMVC与Spring的联系
-SpringMVC六大组件介绍
-DispatchServlet:前端控制器
-Handler:处理器
-View:视图
-HandlerMapping:处理器映射器
-HandlerAdapter:处理器适配器
-ViewResolver:视图解析器
-项目搭建
-POM文件配置基础的依赖
-配置文件
-编码部分
-测试
-编码应用
-返回值的处理
-不使用注解修饰
-ModelAndView
-void
-String(推荐)
-使用注解修饰
-ResponseBody注解
-参数绑定处理
-什么是参数绑定
-默认支持的参数类型
-参数绑定使用要求
-绑定简单类型
-绑定POJO类型
-绑定集合或者数组类型
-自定义日期参数绑定
-文件类型参数绑定
-RequestMapping注解
-value属性:
-method属性:
+[TOC]
 
-SpringMVC相关
-背景介绍
-基础概念介绍
+
+
+# SpringMVC相关
+
+## 背景介绍
+
+### 基础概念介绍
+
 BS和CS开发架构
 一种是 C/S 架构，也就是客户端/服务器；
 一种是 B/S 架构，也就是浏览器/服务器架构。
@@ -52,7 +17,8 @@ BS和CS开发架构
 我们的实际开发中使用的非常多，所以我们课程中的案例也都是基于三层架构设计的。
 JavaEE制定了一套规范，去进行BS结构的处理。这套规范就是Servlet。  
 
-应用系统三层架构
+### 应用系统三层架构
+
 表现层：
 也就是我们常说的web 层。
 它负责接收客户端请求，向客户端响应结果，通常客户端使用http 协议请求web 层，web 层
@@ -74,7 +40,8 @@ JavaEE制定了一套规范，去进行BS结构的处理。这套规范就是Ser
 库中。
 通俗的讲，持久层就是和数据库交互，对数据库表进行曾删改查的。  
 
-MVC设计模式
+### MVC设计模式
+
 MVC 是模型(model)－视图(view)－控制器(controller)的缩写， 是一种用于设计编写 Web 应用程序
 表现层的模式。
 MVC 设计模式的三大角色：
@@ -86,8 +53,10 @@ View（视图）：
 Controller（控制器）：
 是应用程序中处理用户交互的部分。作用一般就是处理程序逻辑的。  
 
-SpringMVC介绍
-SpringMVC是什么
+## SpringMVC介绍
+
+### SpringMVC是什么
+
 SpringMVC 是一种基于MVC 设计模型的请求驱动类型的轻量级 Web 框架，属于
 SpringFrameWork 的后续产品，已经融合在 Spring Web Flow 里面。Spring 框架提供了构建
 Web 应用程序的全功能 MVC 模块。
@@ -98,11 +67,12 @@ Struts2，成为最优秀的 MVC 框架。
 它通过一套注解，让一个简单的 Java 类成为处理请求的控制器，而无须实现任何接口。同时它还
 支持RESTful 编程风格的请求。  
 
-SpringMVC与Spring的联系
+### SpringMVC与Spring的联系
+
 Spring MVC 全名叫 Spring Web MVC ，它是 Spring家族Web模块 的一个重要成员。这一点,我们可以
 从 Spring 的整体结构中看得出来：  
 
-1589117838021
+![1589117838021](C:\Users\semon\AppData\Roaming\Typora\typora-user-images\1589117838021.png)
 
 为什么学习SpringMVC
 也许你要问，为什么要学习Spring MVC呢？Struts2不才是主流吗？看SSH的概念有多火？
@@ -117,44 +87,54 @@ SpringMVC的市场占有率是40%，而Struts2只有可怜的6%。这已然说�
 包，而struts2得需要。
 既然已经知道了SpringMVC的重要性了，那么下面就跟着我一起看看它的神奇之处吧！  
 
-SpringMVC六大组件介绍
-1589117925805
+### SpringMVC六大组件介绍
 
-DispatchServlet:前端控制器
+![1589117925805](C:\Users\semon\AppData\Roaming\Typora\typora-user-images\1589117925805.png)
+
+#### DispatchServlet:前端控制器
+
 用户请求到达前端控制器,相当于mvc模式中的C,DispatchServlet是整个流程控制的中心,由它调用其他组件处理用户的请求,DispatchServlet的存在降低了组件之间的耦合性
 
-Handler:处理器
+#### Handler:处理器
+
 Handler是继DispatchServlet前端控制器的后端控制器,在DispatchServlet的控制下Handler对具体的用户请求进行处理
 
-View:视图
+#### View:视图
+
 SpringMVC框架提供了很多的view视图类型的支持,包括:jstlview,freemarkerView,pdfview等等,一般情况下需要通过页面标签或页面模板技术将数据模型通过页面展示给用户,需要根据业务需求开发具体的页面
 
-HandlerMapping:处理器映射器
+#### HandlerMapping:处理器映射器
+
 HandlerMapping负责根据用户请求找到Handler处理器,SpringMVC提供了不同的映射器实现不同的映射方式,例如:配置文件方式,实现接口方式,注解方式等
 
-HandlerAdapter:处理器适配器
+#### HandlerAdapter:处理器适配器
+
 通过HandlerAdapter对处理器进行执行,这是适配器模式的应用,通过扩展适配器可以对跟多类型的处理器进行执行
 
-ViewResolver:视图解析器
+#### ViewResolver:视图解析器
+
 View Resolver负责将处理结果生成View视图,View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址,再生成View视图对象,最后对View进行渲染将处理结果通过页面展示给用户.
 
-项目搭建
+## 项目搭建
+
 maven工程的简单springmvc-demo
 
-POM文件配置基础的依赖
+### POM文件配置基础的依赖
+
 配置mvc依赖,jstl依赖还有servlet-api依赖,配置maven插件和tomcat插件
 
+```
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-​
+
     <groupId>com.aaron</groupId>
     <artifactId>springmvc-demo</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
-​
+
     <dependencies>
         <!-- spring MVC依赖包 -->
         <dependency>
@@ -179,7 +159,7 @@ POM文件配置基础的依赖
             <scope>provided</scope>
         </dependency>
     </dependencies>
-​
+
     <build>
         <plugins>
             <!--配置maven编译的jdk环境-->
@@ -208,10 +188,13 @@ POM文件配置基础的依赖
         </plugins>
     </build>
 </project>
-配置文件
+```
+
+### 配置文件
+
 web.xml 添加前端控制器
 
-\
+```java
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee"
@@ -264,10 +247,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <!-- <url-pattern>/sss</url-pattern> -->
     <!-- </servlet-mapping> -->
 </web-app>
+```
+
 springmvc.xml配置 配置扫描Bean,配置处理器适配器和处理器映射器,配置视图解析器
 
 DispatchServlet加载的时候回去加载springmvc.xml文件
 
+```java
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -294,7 +280,10 @@ DispatchServlet加载的时候回去加载springmvc.xml文件
         <property name="suffix" value=".jsp" />
     </bean>
 </beans>
-编码部分
+```
+
+### 编码部分
+
 根据业务需求,编写处理器类和视图,即Controller和Jsp页面等,对于前后端分离项目只需要编写Controller定义好和前端交互的格式即可.
 
 处理器开发(Controller):
@@ -305,47 +294,60 @@ DispatchServlet加载的时候回去加载springmvc.xml文件
 
 3.使用注解开发(一般企业开发使用)
 
+```java
 package com.aaron.controller;
-​
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-​
+
 /**
  * Controller处理器的编写
  */
 @Controller
 @RequestMapping("/hello")
 public class HelloController {
-​
-​
+
+
     @ResponseBody
     @RequestMapping("/springmvc")
     public String hello(){
         return "hello springmvc";
     }
-​
-​
+
+
     @RequestMapping("/jsp")
     public String hellojsp(){
         return "hello";
     }
 }
-​
-springmvc 
+
+```
+
+```jsp
 hello springmvc jsp
-测试
+```
+
+### 测试
+
  http://localhost:8080/hello/jsp  访问地址 页面展示正常
 
-1589119125288
+![1589119125288](C:\Users\semon\AppData\Roaming\Typora\typora-user-images\1589119125288.png)
 
-编码应用
-返回值的处理
-不使用注解修饰
-ModelAndView
+
+
+## 编码应用
+
+### 返回值的处理
+
+#### 不使用注解修饰
+
+##### ModelAndView
+
 在Controller方法中定义ModelAndView对象并返回,对象中可以添加model数据,指定view视图.
 
-void
+##### void
+
 在Controller方法形参上可以定义request和response,使用request和response指定相应结果
 
 1.使用request转发页面请求
@@ -354,32 +356,34 @@ void
 
 3.也可以通过response指定响应结果,例如响应json数据
 
-String(推荐)
+##### String(推荐)
+
 1.返回逻辑视图名
 
 2.forward请求转发
 
 3.redirect重定向
 
+```java
 package com.aaron.controller;
-​
-​
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-​
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-​
+
 /**
  * springmvc中对于不使用注解方式的返回值的几种处理方式
  * 1.使用ModelAndView对象
  * 2.返回值为String
  * 3.返回值为void
  */
-​
+
 @Controller
 @RequestMapping("/respHandler")
 public class RespHandlerController {
@@ -395,7 +399,7 @@ public class RespHandlerController {
         mav.addObject("modelAndView","modelAndView");
         return mav;
     }
-​
+
     /**
      * 请求转发
      * @param request
@@ -407,7 +411,7 @@ public class RespHandlerController {
     public void respHandlerVoid1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/respHandler/modelAndView").forward(request,response);
     }
-​
+
     /**
      * 请求重定向
      * @param request
@@ -419,7 +423,7 @@ public class RespHandlerController {
     public void respHandlerVoid2(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.sendRedirect("/respHandler/modelAndView");
     }
-​
+
     /**
      * 相应json格式数据
      * @param request
@@ -437,7 +441,7 @@ public class RespHandlerController {
         //流对象进行写出
         response.getWriter().write(result);
     }
-​
+
     /**
      * 使用String方式返回逻辑视图
      * @return
@@ -446,7 +450,7 @@ public class RespHandlerController {
     public String respHandlerString1(){
         return "modelAndView";
     }
-​
+
     /**
      * 使用String方式进行请求转发
      * @return
@@ -455,7 +459,7 @@ public class RespHandlerController {
     public String respHandlerString2(){
         return "forward:/respHandler/modelAndView";
     }
-​
+
     /**
      * 使用String方式进行请求重定向
      * @return
@@ -464,21 +468,28 @@ public class RespHandlerController {
     public String respHandlerString3(){
         return "redirect:/respHandler/modelAndView";
     }
-​
+
 }
-​
+
+```
+
+```jsp
 <%@ page language="java" contentType="text/html; charset=UTF-8"pageEncoding="UTF-8"%><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">返回值测试页面${modelAndView}
-使用注解修饰
-ResponseBody注解
+```
+
+#### 使用注解修饰
+
+##### ResponseBody注解
+
 作用:
 
 1.ResponseBody注解可以针对Controller返回值类型,使用内置的9种HttpMessageConverter进行匹配,找到合适的HttpMessageConverter进行处理
 
 2.HttpMessageConverter处理逻辑
 
-	2.1指定HttpServletResponse的ContentType值.
+​	2.1指定HttpServletResponse的ContentType值.
 
-	2.2将转换之后的数据放到HttpServletResponse对象的响应体返回到页面
+​	2.2将转换之后的数据放到HttpServletResponse对象的响应体返回到页面
 
 常见的HttpMessageConverter
 
@@ -490,7 +501,7 @@ MappingJacksonHttpMessageConverter
 
 调用response.getWriter()方法将Json格式的字符串回写给调用者.
 
-注意:使用@ResponseBody注解返回Pojo类型的数据时,需要导入jackson相关的依赖包,保证Json转换正常
+**注意:使用@ResponseBody注解返回Pojo类型的数据时,需要导入jackson相关的依赖包,保证Json转换正常**
 
 StringHttpMessageConverter
 
@@ -500,19 +511,20 @@ StringHttpMessageConverter
 
 调用response.getWriter()方法将String类型的字符串回写给调用者
 
-注意:使用@ResponseBody注解直接返回String类型的字符串,需要指定编码,解决返回值乱码的问题
+**注意:使用@ResponseBody注解直接返回String类型的字符串,需要指定编码,解决返回值乱码的问题**
 
+```java
 package com.aaron.controller;
-​
+
 import com.aaron.doamin.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-​
+
 import java.util.ArrayList;
 import java.util.List;
-​
+
 /**
  * 使用注解方式处理返回值 @ResponseBody
  */
@@ -520,7 +532,7 @@ import java.util.List;
 @RequestMapping("/responseBody")
 //@RestController 也可以直接使用 @RestController注解来制定每个方法都是用@ResponseBody注解进行返回
 public class ResponseBodyController {
-​
+
     /**
      * 返回POJO类即java对象
      * @return
@@ -530,7 +542,7 @@ public class ResponseBodyController {
     public User retPojo(){
         return new User("Aaron","123456","26");
     }
-​
+
     /**
      * 返回POJO类即java对象
      * @return
@@ -545,7 +557,7 @@ public class ResponseBodyController {
         list.add(user2);
         return list;
     }
-​
+
     /**
      * 返回字符串
      * @return
@@ -556,20 +568,35 @@ public class ResponseBodyController {
     public String retString(){
         return "综合查询String";
     }
-​
+
 }
-​
-参数绑定处理
-什么是参数绑定
-默认支持的参数类型
-参数绑定使用要求
-绑定简单类型
-绑定POJO类型
-绑定集合或者数组类型
-自定义日期参数绑定
-文件类型参数绑定
-RequestMapping注解
-value属性:
+
+```
+
+
+
+### 参数绑定处理
+
+#### 什么是参数绑定
+
+#### 默认支持的参数类型
+
+#### 参数绑定使用要求
+
+##### 绑定简单类型
+
+##### 绑定POJO类型
+
+##### 绑定集合或者数组类型
+
+#### 自定义日期参数绑定
+
+#### 文件类型参数绑定
+
+#### RequestMapping注解
+
+##### value属性:
+
 请求URL映射
 
 作用:用于映射URL和HandlerMethod方法
@@ -582,7 +609,8 @@ value属性:
 
 用法如下:访问时的URL是/item/findItem
 
-method属性:
+##### method属性:
+
 作用:限定请求URL只能通过指定的method请求方式去访问该HandlerMethod
 
 用法如下:
@@ -593,7 +621,7 @@ method属性:
 
 @RequestMapping(value="/findItem",method={RequestMethod.GET,RequestMethod.POST})
 
-params属性:
+**params属性:**
 
 作用:通过设置params参数条件,进行访问HandlerMethod限制
 
@@ -601,16 +629,70 @@ params属性:
 
 URL请求
 
+```java
 <a href="item/removeItem?name=iphone6&price>5000">删除商品，金额大于
 5000</a>
 <br />
 <a href="item/removeItem?name=iphoneXs&price>7000">删除商品，金额大于
 7000</a>
+```
+
 Controller方法:
 
+```java
 @RequestMapping(value="removeItem",params= {"name","price>5000"})
 public String removeItem(Model model) {
     model.addAttribute("msg", "ItemController...removeItem方法执行
     了");
     return "success";
 }
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
