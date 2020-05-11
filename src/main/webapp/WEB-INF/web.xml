@@ -28,6 +28,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <!-- 如果不指定初始化时机，DispatcherServlet就会在第一次被请求的时候，才会初始化，
         而且只会被初始化一次 -->
         <load-on-startup>2</load-on-startup>
+        <!--    StandardServletMultipartResolvershu属性配置  -->
+
     </servlet>
     <servlet-mapping>
         <servlet-name>springmvc-demo</servlet-name>
@@ -41,6 +43,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         -->
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
+
     <!-- <servlet> -->
     <!-- <servlet-name>sss</servlet-name> -->
     <!-- <servlet-class>sss</servlet-class> -->

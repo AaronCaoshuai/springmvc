@@ -23,4 +23,9 @@ public class HelloController {
     public String hellojsp(){
         return "hello";
     }
+
+    @RequestMapping("/userjsp")
+    public String userjsp(){
+        return "paramBind";
+    }
 }

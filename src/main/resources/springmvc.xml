@@ -15,7 +15,26 @@
     <!-- 配置三大组件之处理器适配器和处理器映射器 -->
     <!-- 内置了RequestMappingHandlerMapping和RequestMappingHandlerAdapter等组件注
     册-->
+    <!--修改spring service context xml配置文件中的annotation-driven,增加属性conversion-service指向新增的conversionService bean。-->
+    <!--<mvc:annotation-driven conversion-service="conversionService"/>-->
     <mvc:annotation-driven />
+
+    <!--配置自定义日期类型转换器-->
+   <!-- <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.aaron.controller.converter.DateConverter"/>
+            </set>
+        </property>
+    </bean>-->
+
+    <!--配置文件上传解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--配置上传文件的最大值,单位byte,文件编码指定为utf-8-->
+        <property name="maxUploadSize" value="10000000"/>
+        <property name="defaultEncoding" value="utf-8"/>
+    </bean>
+
     <!-- 配置三大组件之视图解析器 -->
     <!-- InternalResourceViewResolver:默认支持JSP视图解析-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
