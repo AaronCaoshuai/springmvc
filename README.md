@@ -1127,7 +1127,49 @@ SpringMVC会把mapping映射到ResourceHttpRequestHandler,这样静态资源在�
 
 更多Restful风格相关的API将放置到后续的项目中实践.
 
+### 拦截器的应用
 
+SpringMVC的拦截器主要是针对特定处理器进行拦截的
+
+#### 拦截器介绍
+
+springmvc拦截器(Interceptor)实现对每一个请求处理前后进行相关的业务处理,类似于servlet中的Filter
+
+springmvc中Interceptor拦截请求是通过HandlerInterceptor接口实现的
+
+在SpringMVC中定义一个Interceptor非常简单,主要有四种方式:
+
+1.实现springmvc的HandlerInterceptor接口
+
+2.继承实现了HandlerInterceptor接口的类,比如:SpringMVC已经提供的实现了HandlerInterceptor接口的抽象类HandlerInterceptorAdapter
+
+3.实现SpringMVC的WebRequestInterceptor接口
+
+4.继承实现了WebRequestInterceptor的类
+
+#### 定义拦截器
+
+实现HandlerInterceptor接口
+
+#### 配置拦截器
+
+SpringMVC拦截器是绑定在HandlerMapping中的,即:如果某个HandlerMapping中配置拦截,则该HandlerMapping映射成功的Handler会还是该拦截器
+
+SpringMVC的全局拦截器配置,其实是把配置的拦截器注入到每个已经初始化的HandlerMapping中
+
+#### 多拦截器拦截规则
+
+如果有多个拦截器,那么配置到springmvc.xml中最上面的拦截器,拦截优先级最高.
+
+#### 拦截器应用(实现登录认证)
+
+需求:拦截器对访问的请求URL进行登录拦截校验
+
+1.如果请求的URL是公开地址(无须登录就可以访问的URL,具体指的就是保护login字段的请求URL),采取放行
+
+2.如果用户session存在,则放行
+
+3.不放行,需要跳转到登录页面
 
 
 
