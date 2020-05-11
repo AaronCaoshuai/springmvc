@@ -1125,6 +1125,9 @@ SpringMVC会把mapping映射到ResourceHttpRequestHandler,这样静态资源在�
 
 对于Restful类型的请求推荐使用POSTMAN进行测试.便于模拟请求方法
 
+更多Restful风格相关的API将放置到后续的项目中实践.
+
+
 
 
 
