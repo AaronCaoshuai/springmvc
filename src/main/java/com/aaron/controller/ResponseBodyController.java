@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/responseBody")
-//@RestController 也可以直接使用 @RestController注解来制定每个方法都是用@ResponseBody注解进行返回
+//@RestDemoController 也可以直接使用 @RestController注解来制定每个方法都是用@ResponseBody注解进行返回
 public class ResponseBodyController {
 
     /**

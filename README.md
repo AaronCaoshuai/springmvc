@@ -579,19 +579,428 @@ public class ResponseBodyController {
 
 #### 什么是参数绑定
 
+就是将请求参数串中的value值获取之后,再进行类型转换,然后将转换后的值赋给Controller类中方法的形参,这个过程就是参数绑定
+
+两步:
+
+1.类型转换--请求中的String类型值--->Controller各种数据类型的方法形参
+
+2.赋值操作,将转换之后的值付给Controller方法形参
+
+请求参数格式:http://xxx/xx?id=1&type=301 
+
+请求参数类型:都是String
+
+请求参数值要绑定的目标类型:Controller类中方法的参数,比如简单类型,POJO类型,集合类型
+
+SpringMVC内置类24中参数解析组件:ArgumentResolver
+
 #### 默认支持的参数类型
+
+Controller方法形参中可以随时添加如下类型的参数(Servlet API支持),处理适配器会自动识别并进行赋值
+
+HttpServletRequest:通过request对象获取请求信息
+
+HttpServletResponse:通过response处理响应信息
+
+HttpSession:通过session对象得到session中存放的对象
+
+InputStream,OutputStream,Reader,Writer
+
+Model/ModelMap
 
 #### 参数绑定使用要求
 
 ##### 绑定简单类型
 
+直接绑定:
+
+http请求参数的key和Controller方法形参名称一致
+
+注解绑定:
+
+请求参数的key和Controller方法的形参名称不一致时,需要使用@RequestParam注解才能将请求参数绑定成功
+
+RequestParam注解:
+
+value:参数名称,即入参的请求参数名称,如value="itemid"表示请求的参数中的名称为itemid的参数的值将传入
+
+required:是否必须,默认是true,,表示请求中的一定要有相应的参数,否则报错 
+
+ TTP Status 400 - Required Integer parameter 'XXXX' is not present  
+
+defaultValue:
+
+默认值,表示如果请求中没有同名参数时的默认值
+
 ##### 绑定POJO类型
+
+要求表单中参数名称和Controller方法中的POJO形参的属性名称保持一致.
 
 ##### 绑定集合或者数组类型
 
+简单类型数组
+
+通过http请求批量传递简单类型数据的情况,Controller方法中可以用String[]或者POJO的String[]属性接受(两种方式任选其一),但是不能使用List集合接受
+
+POJO类型集合或者数组
+
+批量传递的请求参数,最终要是用List<POJO>来接受,那么这个List<POJO>必须放在另一个POJO类中
+
 #### 自定义日期参数绑定
 
+对于springmvc无法解析的参数绑定类型,比如:时间 年月日时分秒的日期,绑定到Date类型会报错,此时需要自定义参数转换器进行参数绑定.
+
+也可以使用
+
+ @JsonFormat（"pattern="yyyy-MM-dd HH:mm:ss",timezone="GTM+8"） // 即可将json返回的对象为指定的类型。 
+
+ @DateTimeFormat（“pattern="yyyy-MM-dd”） // 可将String转换为Date类型 
+
 #### 文件类型参数绑定
+
+SpringMVC文件上传的实现,是由commons-fileupload这个三方jar包实现的
+
+加入依赖包:
+
+  <dependency>
+<groupId>commons-fileupload</groupId>
+<artifactId>commons-fileupload</artifactId>
+<version>1.3.1</version>
+</dependency>
+
+配置Multipart解析器
+
+在springmvc.xml中配置multipart类型解析器
+
+ 
+
+```java
+ <!-- multipart类型解析器，文件上传 -->
+<bean id="multipartResolver"class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+<!-- 上传文件的最大尺寸 5M-->
+<property name="maxUploadSize" value="5242880"/>
+</bean>  
+```
+
+注意:对于Servlet低于3的版本需要导入commons-fileupload包进行文件上传
+
+对于Servlet3或者以上版本可以使用Servlet内置的文件上传
+
+配置spring-mvc.xml的多部件上传后
+
+在web.xml中也需要配置才可以使用.
+
+```java
+ <servlet>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+    <multipart-config>
+      <max-file-size>20848820</max-file-size>
+      <!--上传内文件的最大容量-->
+      <max-request-size>418018841</max-request-size>
+      <!--表示多部分HTTP请求允许的最大容量-->
+      <file-size-threshold>1048576</file-size-threshold>
+      <!--超过这个容量将会被写到磁盘中-->
+      <location>/image/</location>
+      <!--要将已上传的文件保存到磁盘中的位置-->
+    </multipart-config>
+  </servlet>
+```
+
+```java
+package com.aaron.controller;
+
+import com.aaron.doamin.User;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * 请求参数绑定
+ * SpringMVC默认支持的参数类型
+ * HttpServletRequest,HttpServletResponse,HttpSession
+ * InputStream,OutputStream,Reader,Writer,Model/ModelMap
+ * ModelMap 继承自 LinkedHashMap ，Model是一个接口，它们的底层实现都是同一个类
+ * （ BindingAwareModelMap ），作用就是向页面传递数据，相当于 Request 的作用，如下
+ */
+@RestController
+@RequestMapping("/user")
+public class ParamBindController {
+
+    @RequestMapping("/findUserById")
+    public String findUserById(Integer id,String name){
+        System.out.println("param :"+id+",name:"+name);
+        return "success";
+    }
+
+    /**
+     * 简单参数注解绑定 对于名称不一致的处理
+     * @RequestParam 属性required默认为true,如果不是必须参数,可以修改为false
+     * @RequestParam(value = "uid",required = false)
+     * @param id
+     * @param name
+     * @return
+     */
+    @RequestMapping("/findUserById2")
+    public String findUserById2(@RequestParam("uid") Integer id, String name){
+        System.out.println("param :"+id+",name:"+name);
+        return "success";
+    }
+
+    /**
+     * 把简单参数封装到POJO类中
+     * @param user
+     * @return
+     */
+    @RequestMapping("/saveUser")
+    public String saveUser(User user){
+        System.out.println("param:"+user);
+        return "success";
+    }
+
+    /**
+     * 接受数组类型数据正确使用数组接受
+     * @param id
+     * @return
+     */
+    @RequestMapping("/deleteUserByIds")
+    public String deleteUserByIds(Integer[] id){
+        System.out.println("params:"+ Arrays.toString(id));
+        return "success";
+    }
+
+    /**
+     * 错误示范使用集合接受
+     * @param id
+     * @return
+     */
+    @RequestMapping("/deleteUserByIds2")
+    public String deleteUserByIds2(List id){
+        System.out.println("params:"+id.toString());
+        return "success";
+    }
+
+    /**
+     * 使用Bean的数组或者集合接受
+     * @param user
+     * @return
+     */
+    @RequestMapping("/deleteUserByIds3")
+    public String deleteUserByIds3(User user){
+        System.out.println("params:"+user.toString());
+        return "success";
+    }
+
+
+    /**
+     * POJO类中的list和map参数绑定
+     * @param user
+     * @return
+     */
+    @RequestMapping("/updateUser")
+    public String updateUser(User user){
+        System.out.println("param : "+ user);
+        return "success";
+    }
+
+
+    /**
+     * 日期类型解析
+     * 1.使用自定义的时间类型转换器,并且注册到类型转换器中
+     * 2.使用@DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")
+     * 将前台传过来的时间字符串转换成Date对象,需要前后端格式指定一致
+     * 3.对于后台返回给前端的参数,
+     * 需要加上@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
+     * 并且由于时区的问题,需要指定timezone
+     * @param birthday
+     * @return
+     */
+    @RequestMapping("/deleteUser")
+    public String deleteUser(String birthday){
+        System.out.println("param : "+ birthday);
+        return "success";
+    }
+
+   @RequestMapping("/deleteUser2")
+   public String deleteUser2(Date birthday){
+       System.out.println("param : "+ birthday);
+       return "success";
+   }
+
+    @RequestMapping("/deleteUser3")
+    public User deleteUser3(User user){
+        System.out.println("param : "+ user);
+        return user;
+    }
+
+    /**
+     * SpringMVC上传文件
+     * @param uploadFile
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/fileupload")
+    public String fileupload(MultipartFile uploadFile) throws IOException {
+        if (uploadFile != null) {
+            System.out.println(uploadFile.getOriginalFilename());
+            // 原始图片名称
+            String originalFilename = uploadFile.getOriginalFilename();
+            // 如果没有图片名称，则上传不成功
+            if (originalFilename != null && originalFilename.length() > 0) {
+                // 存放图片的物理路径
+                String picPath = "E:\\";
+                // 获取上传文件的扩展名
+                String extName = originalFilename.substring(originalFilename.lastIndexOf("."));
+                // 新文件的名称
+                String newFileName = UUID.randomUUID() + extName;
+                // 新的文件
+                File newFile = new File(picPath + newFileName);
+                // 把上传的文件保存成一个新的文件
+                uploadFile.transferTo(newFile);
+                // 同时需要把新的文件名更新到数据库中
+            }
+        }
+        return "文件上传成功";
+    }
+
+}
+
+```
+
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 配置处理器Bean的读取 -->
+    <!-- 扫描controller注解,多个包中间使用半角逗号分隔 -->
+    <context:component-scan base-package="com.aaron.controller"/>
+    <!-- 配置三大组件之处理器适配器和处理器映射器 -->
+    <!-- 内置了RequestMappingHandlerMapping和RequestMappingHandlerAdapter等组件注
+    册-->
+    <!--修改spring service context xml配置文件中的annotation-driven,增加属性conversion-service指向新增的conversionService bean。-->
+    <!--<mvc:annotation-driven conversion-service="conversionService"/>-->
+    <mvc:annotation-driven />
+
+    <!--配置自定义日期类型转换器-->
+   <!-- <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.aaron.controller.converter.DateConverter"/>
+            </set>
+        </property>
+    </bean>-->
+
+    <!--配置文件上传解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--配置上传文件的最大值,单位byte,文件编码指定为utf-8-->
+        <property name="maxUploadSize" value="10000000"/>
+        <property name="defaultEncoding" value="utf-8"/>
+    </bean>
+
+    <!-- 配置三大组件之视图解析器 -->
+    <!-- InternalResourceViewResolver:默认支持JSP视图解析-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 前缀,后缀,只需要返回动态的部分,就可以寻址到对应的视图 -->
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+</beans>
+```
+
+```java
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>参数绑定演示demo</title>
+</head>
+<body>
+<!-- request请求的内容类型主要分为：K/V类型、Multipart类型、JSON类型 -->
+<!-- 将request请求参数，绑定到简单类型（基本类型和String类型）方法参数 -->
+<!-- 直接绑定 -->
+<a href="${pageContext.request.contextPath}/user/findUserById?
+id=1&name=bingbing">查询用户1</a>
+<!-- @RequestParam注解绑定 -->
+<a href="${pageContext.request.contextPath}/user/findUserById2?uid=1&name=张三">查询用
+户2</a>
+<!-- 将request请求参数，绑定到POJO类型(简单POJO和包装POJO的)方法参数 -->
+<form action="${pageContext.request.contextPath}/user/saveUser"
+method="post">
+用户名称：<input type="text" name="username"><br />
+用户年龄：<input type="text" name="age"><br />
+所属省份：<input type="text" name="address.provinceName"><br />
+所属城市：<input type="text" name="address.cityName"><br />
+<input type="submit" value="保存">
+</form>
+<!-- 将request请求参数，绑定到[元素是简单类型的集合或数组]参数 -->
+<!-- 使用数组接收 -->
+<a href="${pageContext.request.contextPath}/user/deleteUserByIds?
+id=1&id=2&id=3">根据ID批量删除用户</a>
+<!-- 使用List接收（错误示例） -->
+<a href="${pageContext.request.contextPath}/user/deleteUserByIds2?
+id=1&id=2&id=3">根据ID批量删除用户</a>
+<!-- 使用Bean的List属性接收 -->
+<a href="${pageContext.request.contextPath}/user/deleteUserByIds3?
+uid=1&uid=2&uid=3">根据ID批量删除用户</a>Controller代码
+<!-- 将request请求参数，绑定到[元素是POJO类型的List集合或Map集合]参数 -->
+<form action="${pageContext.request.contextPath}/user/updateUser"
+method="post">
+用户名称：<input type="text" name="username"><br />
+用户年龄：<input type="text" name="age"><br />
+<!-- itemList[集合下标]：集合下标必须从0开始 -->
+<!-- 辅助理解：先将name属性封装到一个Item对象中，再将该Item对象放入itemList集合的
+指定下标处 -->
+购买商品1名称：<input type="text" name="itemList[0].name"><br />
+购买商品1价格：<input type="text" name="itemList[0].price"><br />
+购买商品2名称：<input type="text" name="itemList[1].name"><br />
+购买商品2价格：<input type="text" name="itemList[1].price"><br />
+<!-- itemMap['item3']：其中的item3、item4就是Map集合的key -->
+<!-- 辅助理解：先将name属性封装到一个Item对象中，再将该Item对象作为value放入
+itemMap集合的指定key处 -->
+购买商品3名称：<input type="text" name="itemMap['item3'].name"><br />
+购买商品3价格：<input type="text" name="itemMap['item3'].price"><br />
+购买商品4名称：<input type="text" name="itemMap['item4'].name"><br />
+购买商品4价格：<input type="text" name="itemMap['item4'].price"><br />
+<input type="submit" value="保存">
+</form>
+<!-- 将request请求参数，绑定到Date类型方法参数 -->
+<!-- 请求参数是：【年月日】 格式 -->
+    <a href="${pageContext.request.contextPath}/user/deleteUser?birthday=2020-05-11">根据日期删除用户(String)</a>
+    <!-- 请求参数是：【年月日 时分秒】 格式 -->
+    <a href="${pageContext.request.contextPath}/user/deleteUser2?birthday=2020-05-11 12:10:33">根据日期删除用户(Date)</a>
+    <a href="${pageContext.request.contextPath}/user/deleteUser3?birthday=2020-05-11 12:10:33">根据日期删除用户(Date)</a>
+    <!-- 文件类型参数绑定 -->
+    <form action="${pageContext.request.contextPath}/user/fileupload" method="post"
+    enctype="multipart/form-data">
+    图片：<input type="file" name="uploadFile" /><br />
+    <input type="submit" value="上传" />
+    </form>
+    </body>
+</html>
+```
+
+
 
 #### RequestMapping注解
 
@@ -650,11 +1059,71 @@ public String removeItem(Model model) {
 
 
 
+## SpringMVC对RESTful的支持
 
+#### RESTful的URL路径变量
 
+restful的URL路径变量
 
+Url-patter:设置为/,方便拦截restful请求
 
+```java
+<servlet-mapping>
+	<servlet-name>DispatcherServlet</servlet-name>
+	<url-pattern>/</url-pattern>
+</servlet-mapping>
+```
 
+@PathVariable:可以解析出来URL中的模板变量({id})
+
+例如:http://localhost:8080/ssm/item/1/zhangsan
+
+Controller
+
+```java
+@RequestMapping(“{id}/{name}”)
+@ResponseBody
+public Item queryItemById(@PathVariable Integer id, @PathVariable String
+name){
+
+}
+```
+
+#### RESTful的CRUD
+
+@RequestMapping:通过设置method属性值,可以将同一个url映射到不同的HandlerMethod方法上
+
+@GetMapping@PostMapping@PutMapping@DeleteMapping注解同@RequestMapping注解的method属性设置
+
+#### RESTful的资源表述
+
+restful服务中的一个重要的特性就是一种资源可以有多种表现形式,在springmvc中可以使用ContentNegotiatingManager这个内容协商管理器来实现这种方式
+
+#### 内容协商的三种方式
+
+扩展名:比如.json表示我要json格式数据,.xml表示我要xml格式数据
+
+请求参数:默认是"format"
+
+请求头设置Accept参数:比如设置Accept为application/json表示要json格式数据
+
+不过现在restful响应一般都是json格式,所以一般也不实用内容协商管理器,直接使用@ResponseBody注解将数据按照json格式返回
+
+#### 静态资源访问
+
+如果在DispatcherServlet中设置url-pattern为/则必须对静态资源进行访问控制处理.
+
+在springmvc.xml文件中,使用mvc:resources标签,具体如下:
+
+```
+<!-- 当DispatcherServlet配置为/来拦截请求的时候，需要配置静态资源的访问映射 -->
+<mvc:resources location="/js/" mapping="/js/"/>
+<mvc:resources location="/css/" mapping="/css/"/>
+```
+
+SpringMVC会把mapping映射到ResourceHttpRequestHandler,这样静态资源在经过Dispatcherservlet转发时就可以找到对应的Handler了
+
+对于Restful类型的请求推荐使用POSTMAN进行测试.便于模拟请求方法
 
 
 

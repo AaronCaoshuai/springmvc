@@ -28,4 +28,9 @@ public class HelloController {
     public String userjsp(){
         return "paramBind";
     }
+
+    @RequestMapping("/restdemo")
+    public String restdemo(){
+        return "restdemo";
+    }
 }

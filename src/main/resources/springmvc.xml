@@ -42,4 +42,6 @@
         <property name="prefix" value="/WEB-INF/jsp/" />
         <property name="suffix" value=".jsp" />
     </bean>
+    <!--静态资源控制-->
+    <mvc:resources location="/static/*" mapping="/static/*"/>
 </beans>
