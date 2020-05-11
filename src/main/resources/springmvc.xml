@@ -23,10 +23,13 @@
    <!-- <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="converters">
             <set>
-                <bean class="com.aaron.controller.converter.DateConverter"/>
+                <bean class="com.aaron.converter.DateConverter"/>
             </set>
         </property>
     </bean>-->
+    <mvc:interceptors>
+        <bean class="com.aaron.interceptor.LoginInterceptor"/>
+    </mvc:interceptors>
 
     <!--配置文件上传解析器-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

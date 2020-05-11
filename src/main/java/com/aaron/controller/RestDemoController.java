@@ -29,7 +29,7 @@ public class RestDemoController {
 
     @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
     public String demo3(@PathVariable("id") Integer id,User user){
-        System.out.println("param id :"+id);
+        System.out.println("param id :"+id + "user:"+user);
         return "put success";
     }
 
